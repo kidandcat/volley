@@ -10,18 +10,19 @@ import
 
 
 game = newGame()
-if game.init(GameWidth, GameHeight,
-             title = GameTitle, icon = GameIcon,
-             integerScale = true):
+if game.init(GameWidth, GameHeight, title = GameTitle, integerScale = true):
+
   # Init
-  game.setResizable(true)
-  game.minSize = (GameWidth, GameHeight)
-  game.windowSize = (GameWidth * 2, GameHeight * 2)
-  game.centrify()
-  # Scenes
+  game.setResizable(true) # Window could be resized
+  game.minSize = (GameWidth, GameHeight) # Minimal window size
+  game.windowSize = (GameWidth * 2, GameHeight * 2) # Double scaling (1280x720)
+  game.centrify() # Place window at the center of the screen
+
+  # Create scenes
   titleScene = newTitleScene()
   mainScene = newMainScene()
+
   # Run
-  game.scene = titleScene
-  run game
+  game.scene = titleScene # Initial scene
+  run game  # Let's go!
 
