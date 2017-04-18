@@ -18,6 +18,8 @@ if game.init(GameWidth, GameHeight, title = GameTitle, integerScale = true):
   game.windowSize = (GameWidth * 2, GameHeight * 2) # Double scaling (1280x720)
   game.centrify() # Place window at the center of the screen
 
+  loadData() # Call it before any scene initialization
+
   # Create scenes
   titleScene = newTitleScene()
   mainScene = newMainScene()
