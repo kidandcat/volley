@@ -3,6 +3,7 @@ import
     assets,
     font,
     scene,
+    texturegraphic,
     truetypefont,
     types,
   ]
@@ -20,6 +21,7 @@ var
 
 var
   defaultFont*, bigFont*: TrueTypeFont
+  gfxData*: Assets[TextureGraphic]
 
 
 proc loadData*() =
@@ -30,8 +32,14 @@ proc loadData*() =
   if not bigFont.load("data/fnt/FSEX300.ttf", 32):
     echo "ERROR: Can't load font"
 
+  gfxData = newAssets[TextureGraphic](
+    "data/gfx",
+    proc(file: string): TextureGraphic = newTextureGraphic(file))
+
 
 proc freeData*() =
   defaultFont.free()
   bigFont.free()
+  for graphic in gfxData.values:
+    graphic.free()
 
