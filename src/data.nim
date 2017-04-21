@@ -1,6 +1,7 @@
 import
   nimgame2 / [
     assets,
+    input,
     font,
     scene,
     texturegraphic,
@@ -17,9 +18,6 @@ const
 
 var
   titleScene*, mainScene*: Scene
-
-
-var
   defaultFont*, bigFont*: TrueTypeFont
   gfxData*: Assets[TextureGraphic]
 
