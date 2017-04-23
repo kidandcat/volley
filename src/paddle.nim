@@ -1,6 +1,7 @@
 import
   nimgame2 / [
     assets,
+    collider,
     graphic,
     input,
     nimgame,
@@ -20,7 +21,6 @@ type
   PaddleControl* = enum
     pcPlayer1, pcPlayer2
 
-
   Paddle* = ref object of Entity
     control*: PaddleControl
 
@@ -36,6 +36,11 @@ proc init*(paddle: Paddle, placement: PaddlePlacement, control: PaddleControl) =
     of ppRight: (float(game.size.w - paddle.graphic.w), game.size.h / 2)
 
   paddle.control = control # Set control mode
+
+  # Collisions
+  paddle.tags.add "paddle"
+  paddle.collider = paddle.newBoxCollider((0.0, 0.0), paddle.graphic.dim)
+  paddle.collider.tags.add "ball"
 
 
 proc newPaddle*(placement: PaddlePlacement, control: PaddleControl): Paddle =

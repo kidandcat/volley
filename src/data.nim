@@ -1,7 +1,6 @@
 import
   nimgame2 / [
     assets,
-    input,
     font,
     scene,
     texturegraphic,
