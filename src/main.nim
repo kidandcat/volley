@@ -49,4 +49,5 @@ method update*(scene: MainScene, elapsed: float) =
   scene.updateScene(elapsed)
 
   if ScancodeF10.pressed: colliderOutline = not colliderOutline
+  if ScancodeF11.pressed: showInfo = not showInfo
 
