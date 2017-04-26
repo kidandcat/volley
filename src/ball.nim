@@ -49,6 +49,7 @@ method update*(ball: Ball, elapsed: float) =
 
   ball.pos += movement
 
+  # Top and bottom walls collisions
   if ball.pos.y < ball.radius or
      ball.pos.y >= (game.size.h.float - ball.radius):
     ball.vel.y = -ball.vel.y
@@ -67,4 +68,7 @@ method onCollide*(ball: Ball, target: Entity) =
         ball.pos.x = target.pos.x + target.center.x + ball.radius + 1
       else:
         ball.pos.x = target.pos.x - target.center.x - ball.radius - 1
+
+      # increase speed
+      ball.vel += (speedInc, speedInc) * ball.vel / abs(ball.vel)
 
