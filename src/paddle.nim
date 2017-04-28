@@ -11,7 +11,7 @@ import
 
 
 const
-  speed = 250.0 # Speed (in pixels per second)
+  Speed = 250.0 # Speed (in pixels per second)
 
 
 type
@@ -49,7 +49,7 @@ proc newPaddle*(placement: PaddlePlacement, control: PaddleControl): Paddle =
 
 
 method update*(paddle: Paddle, elapsed: float) =
-  var movement = speed * elapsed
+  var movement = Speed * elapsed
 
   # Read input
   case paddle.control:

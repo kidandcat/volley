@@ -1,6 +1,7 @@
 import
   nimgame2 / [
     input,
+    nimgame,
     scene,
     settings,
   ],
@@ -50,4 +51,9 @@ method update*(scene: MainScene, elapsed: float) =
 
   if ScancodeF10.pressed: colliderOutline = not colliderOutline
   if ScancodeF11.pressed: showInfo = not showInfo
+
+  # check if the ball is out of the screen borders
+  if (scene.ball.pos.x < 0) or (scene.ball.pos.x >= game.size.w.float) or
+     (scene.ball.pos.y < 0) or (scene.ball.pos.y >= game.size.h.float):
+    scene.ball.reset()
 

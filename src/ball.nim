@@ -2,6 +2,7 @@ import
   nimgame2 / [
     assets,
     collider,
+    draw,
     entity,
     graphic,
     nimgame,
@@ -12,18 +13,21 @@ import
 
 
 const
-  speed = 100.0 # Speed (in pixels per second)
-  speedInc = 25.0 # Speed increase after each bounce
+  Speed = 100.0 # Speed (in pixels per second)
+  SpeedInc = 25.0 # Speed increase after each bounce
+  Pause = 1.0 # Pause value before launch (in seconds)
 
 type
   Ball* = ref object of Entity
     radius: float
+    pause: float
 
 
 proc reset*(ball: Ball) =
   ball.pos = game.size / 2  # place to the center of the screen
-  ball.vel.x = speed * randomSign().float
-  ball.vel.y = speed * randomSign().float
+  ball.vel.x = Speed * randomSign().float
+  ball.vel.y = Speed * randomSign().float
+  ball.pause = Pause
 
 
 proc init*(ball: Ball) =
@@ -44,15 +48,27 @@ proc newBall*(): Ball =
   result.init()
 
 
+method render*(ball: Ball) =
+  ball.renderEntity()
+  if ball.pause > 0.0: # pre-launch pause
+    discard circle(ball.pos, ball.pause * 100, 0xFFFFFFFF'u32, DrawMode.aa)
+
+
 method update*(ball: Ball, elapsed: float) =
-  var movement = ball.vel * elapsed
+  if ball.pause <= 0.0:
 
-  ball.pos += movement
+    var movement = ball.vel * elapsed
 
-  # Top and bottom walls collisions
-  if ball.pos.y < ball.radius or
-     ball.pos.y >= (game.size.h.float - ball.radius):
-    ball.vel.y = -ball.vel.y
+    ball.pos += movement
+
+    # Top and bottom walls collisions
+    if ball.pos.y < ball.radius or
+      ball.pos.y >= (game.size.h.float - ball.radius):
+      ball.vel.y = -ball.vel.y
+
+  else: # pre-launch pause
+
+    ball.pause -= elapsed
 
 
 method onCollide*(ball: Ball, target: Entity) =
@@ -70,5 +86,5 @@ method onCollide*(ball: Ball, target: Entity) =
         ball.pos.x = target.pos.x - target.center.x - ball.radius - 1
 
       # increase speed
-      ball.vel += (speedInc, speedInc) * ball.vel / abs(ball.vel)
+      ball.vel += (SpeedInc, SpeedInc) * ball.vel / abs(ball.vel)
 
