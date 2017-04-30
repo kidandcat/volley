@@ -19,6 +19,7 @@ var
   titleScene*, mainScene*: Scene
   defaultFont*, bigFont*: TrueTypeFont
   gfxData*: Assets[TextureGraphic]
+  score1*, score2*: int
 
 
 proc loadData*() =
