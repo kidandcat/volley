@@ -1,5 +1,7 @@
 import
   nimgame2 / [
+    assets,
+    audio,
     entity,
     graphic,
     input,
@@ -7,6 +9,7 @@ import
     textgraphic,
     scene,
     settings,
+    types,
   ],
   ball,
   data,
@@ -18,6 +21,7 @@ type
     leftPaddle, rightPaddle: Paddle
     ball: Ball
     scoreText: TextGraphic
+    pause: Entity
 
 
 proc init*(scene: MainScene) =
@@ -45,9 +49,19 @@ proc init*(scene: MainScene) =
   score.layer = 10 # text should be over other entities
   scene.add score
 
+  # pause
+  let pauseText = newTextGraphic(bigFont)
+  pauseText.setText "PAUSE"
+  scene.pause = newEntity()
+  scene.pause.graphic = pauseText
+  scene.pause.centrify()
+  scene.pause.pos = game.size / 2
+  scene.pause.visible = false
+  scene.add scene.pause
+
 
 proc free*(scene: MainScene) =
-  discard
+  scene.scoreText.free()
 
 
 proc newMainScene*(): MainScene =
@@ -55,11 +69,22 @@ proc newMainScene*(): MainScene =
   init result
 
 
+method event*(scene: MainScene, event: Event) =
+  scene.eventScene(event)
+  if event.kind == KeyDown:
+    # Pause/Unpause
+    if event.key.keysym.scancode == ScancodeP:
+      gamePaused = not gamePaused
+      scene.pause.visible = gamePaused
+
+
 method show*(scene: MainScene) =
   echo "Switched to MainScene"
   scene.ball.reset()
   score1 = 0
   score2 = 0
+  scene.scoreText.setText "0:0"
+  discard sfxData["bell"].play()
 
 
 method update*(scene: MainScene, elapsed: float) =
@@ -80,4 +105,5 @@ method update*(scene: MainScene, elapsed: float) =
     scene.scoreText.setText $score1 & ":" & $score2
     # reset
     scene.ball.reset()
+    discard sfxData["bell"].play()
 

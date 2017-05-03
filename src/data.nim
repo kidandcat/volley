@@ -1,6 +1,7 @@
 import
   nimgame2 / [
     assets,
+    audio,
     font,
     scene,
     texturegraphic,
@@ -20,6 +21,7 @@ var
   defaultFont*, bigFont*: TrueTypeFont
   gfxData*: Assets[TextureGraphic]
   score1*, score2*: int
+  sfxData*: Assets[Sound]
 
 
 proc loadData*() =
@@ -33,6 +35,10 @@ proc loadData*() =
   gfxData = newAssets[TextureGraphic](
     "data/gfx",
     proc(file: string): TextureGraphic = newTextureGraphic(file))
+
+  sfxData = newAssets[Sound](
+    "data/sfx",
+    proc(file: string): Sound = newSound(file))
 
 
 proc freeData*() =

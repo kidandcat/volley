@@ -1,6 +1,7 @@
 import
   nimgame2 / [
     assets,
+    audio,
     collider,
     draw,
     entity,
@@ -65,6 +66,7 @@ method update*(ball: Ball, elapsed: float) =
     if ball.pos.y < ball.radius or
       ball.pos.y >= (game.size.h.float - ball.radius):
       ball.vel.y = -ball.vel.y
+      discard sfxData["hit3"].play()
 
   else: # pre-launch pause
 
@@ -82,8 +84,10 @@ method onCollide*(ball: Ball, target: Entity) =
       # Move the ball out of the collision zone
       if ball.pos.x < game.size.w / 2:
         ball.pos.x = target.pos.x + target.center.x + ball.radius + 1
+        discard sfxData["hit1"].play()
       else:
         ball.pos.x = target.pos.x - target.center.x - ball.radius - 1
+        discard sfxData["hit2"].play()
 
       # increase speed
       ball.vel += (SpeedInc, SpeedInc) * ball.vel / abs(ball.vel)
