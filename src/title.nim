@@ -24,7 +24,7 @@ proc init*(scene: TitleScene) =
   let title = newEntity() # Create a title entity
   title.graphic = titleText # Assign the title text graphic
   title.centrify() # Set the origin point to the graphic's center
-  title.pos = (GameWidth / 2, GameHeight / 3) # Set title position on screen
+  title.pos = (GameWidth / 2, GameHeight / 3) # Set the title position on the screen
   scene.add title # Add title entity to the scene
 
   # Create a subtitle text graphic with a default font

@@ -75,7 +75,7 @@ method update*(ball: Ball, elapsed: float) =
 
 method onCollide*(ball: Ball, target: Entity) =
   if "paddle" in target.tags:
-    # Check if the ball is in the front of a paddle
+    # Check if the ball is in front of a paddle
     if (ball.pos.y >= target.pos.y - target.center.y) and
        (ball.pos.y <= target.pos.y + target.center.y):
 
