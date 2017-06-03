@@ -46,4 +46,6 @@ proc freeData*() =
   bigFont.free()
   for graphic in gfxData.values:
     graphic.free()
+  for sound in sfxData.values:
+    sound.free()
 
