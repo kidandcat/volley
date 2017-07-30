@@ -1,7 +1,6 @@
 import
   nimgame2 / [
     assets,
-    collider,
     graphic,
     input,
     nimgame,
