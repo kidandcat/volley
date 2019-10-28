@@ -22,6 +22,7 @@ type
     ball: Ball
     scoreText: TextGraphic
     pause: Entity
+    stick: Entity
 
 
 proc init*(scene: MainScene) =
@@ -30,14 +31,28 @@ proc init*(scene: MainScene) =
   # left paddle
   scene.leftPaddle = newPaddle(ppLeft, pcPlayer1)
   scene.add scene.leftPaddle
+  scene.add scene.leftPaddle.box
 
   # right paddle
   scene.rightPaddle = newPaddle(ppRight, pcPlayer2)
   scene.add scene.rightPaddle
+  scene.add scene.rightPaddle.box
 
   # ball
   scene.ball = newBall()
   scene.add scene.ball
+
+  # stick
+  scene.stick = newEntity()
+  scene.stick.graphic = gfxData["stick"]
+  scene.stick.centrify()
+  scene.stick.tags.add "stick"
+  scene.stick.pos = (game.size.w / 2, float(game.size.h) - scene.stick.graphic.h / 2)
+  scene.stick.collider = scene.stick.newBoxCollider((0.0, 0.0), scene.stick.graphic.dim)
+  scene.add scene.stick
+
+  scene.leftPaddle.collisionEnvironment = @[Entity(scene.ball), scene.stick]
+  scene.rightPaddle.collisionEnvironment = @[Entity(scene.ball), scene.stick]
 
   # score
   scene.scoreText = newTextGraphic(bigFont)
@@ -94,10 +109,9 @@ method update*(scene: MainScene, elapsed: float) =
   if ScancodeF11.pressed: showInfo = not showInfo
 
   # check if the ball is out of the screen borders
-  if (scene.ball.pos.x < 0) or (scene.ball.pos.x >= game.size.w.float) or
-     (scene.ball.pos.y < 0) or (scene.ball.pos.y >= game.size.h.float):
+  if scene.ball.pos.y >= game.size.h.float:
     # increase score
-    if scene.ball.pos.x < 0:
+    if scene.ball.pos.x < game.size.w / 2:
       inc score2
     else:
       inc score1

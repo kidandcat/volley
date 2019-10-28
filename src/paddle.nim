@@ -10,7 +10,10 @@ import
 
 
 const
-  Speed = 250.0 # Speed (in pixels per second)
+  GravAcc* = 800
+  Drag* = 2000
+  JumpVel = 550
+  MaxVel = 350
 
 
 type
@@ -22,6 +25,7 @@ type
 
   Paddle* = ref object of Entity
     control*: PaddleControl
+    box*: Entity
 
 
 proc init*(paddle: Paddle, placement: PaddlePlacement, control: PaddleControl) =
@@ -38,8 +42,25 @@ proc init*(paddle: Paddle, placement: PaddlePlacement, control: PaddleControl) =
 
   # Collisions
   paddle.tags.add "paddle"
-  paddle.collider = paddle.newBoxCollider((0.0, 0.0), paddle.graphic.dim)
+  paddle.collider = paddle.newBoxCollider((0.0, 0.0), (paddle.graphic.w+2, paddle.graphic.h-4))
   paddle.collider.tags.add "ball"
+  paddle.collider.tags.add "stick"
+
+  let box = newEntity()
+  box.initEntity()
+  box.centrify()
+  box.pos = paddle.pos
+  box.parent = paddle
+  box.tags.add "sides"
+  box.collider = paddle.newBoxCollider((0.0, 0.0), (paddle.graphic.w-4, paddle.graphic.h+2))
+  box.collider.tags.add "ball"
+  paddle.box = box
+  
+
+  # physics
+  paddle.acc.y = GravAcc
+  paddle.drg.x = Drag
+  paddle.physics = platformerPhysics
 
 
 proc newPaddle*(placement: PaddlePlacement, control: PaddleControl): Paddle =
@@ -48,24 +69,29 @@ proc newPaddle*(placement: PaddlePlacement, control: PaddleControl): Paddle =
 
 
 method update*(paddle: Paddle, elapsed: float) =
-  var movement = Speed * elapsed
-
+  paddle.updateEntity elapsed
   # Read input
   case paddle.control:
   # First player
   of pcPlayer1:
-    if ScancodeQ.down: paddle.pos.y -= movement # Move up
-    if ScancodeA.down: paddle.pos.y += movement # Move down
+    if ScancodeW.pressed and paddle.pos.y > game.size.h.float - paddle.center.y: paddle.vel.y = -JumpVel
+    if ScancodeA.down: paddle.vel.x = -MaxVel
+    if ScancodeD.down: paddle.vel.x = MaxVel
   # Second player
   of pcPlayer2:
-    if ScancodeUp.down: paddle.pos.y -= movement    # Move up
-    if ScancodeDown.down: paddle.pos.y += movement  # Move down
+    if ScancodeUp.pressed and paddle.pos.y > game.size.h.float - paddle.center.y: paddle.vel.y = -JumpVel
+    if ScancodeLeft.down: paddle.vel.x = -MaxVel
+    if ScancodeRight.down: paddle.vel.x = MaxVel
 
   # Check for the screen borders
   paddle.pos.y = clamp(
     paddle.pos.y,
     paddle.center.y,
     game.size.h.float - paddle.center.y)
+  paddle.pos.x = clamp(
+    paddle.pos.x,
+    paddle.center.x,
+    game.size.w.float - paddle.center.x)
 
 
 
